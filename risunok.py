@@ -9,6 +9,7 @@ sky = gr.Polygon(gr.Point(0,0), gr.Point(0,400), gr.Point(600,400), gr.Point(600
 sky.setFill('blue')
 def draw_star():
     gr.Polygon(gr.Point())
+
 def draw_spartak(x):
     romb = gr.Polygon(gr.Point(x-75,150), gr.Point(x,100), gr.Point(x+75,150), gr.Point(x,200))
     romb.setFill('red')
@@ -30,6 +31,7 @@ def draw_spartak(x):
     lettername.setSize(15)
     lettername.setFill('red')
     lettername.draw(window)
+
 def gate_bar(x):
     bar = gr.Line(gr.Point(x, 400), gr.Point(x, 300))
     bar.setWidth(10)
