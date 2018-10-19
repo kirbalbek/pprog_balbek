@@ -1,4 +1,5 @@
 import graphics as gr
+import time
 
 window = gr.GraphWin("Otkritiye Arena", 600, 600)
 
@@ -69,6 +70,10 @@ linerup.setOutline('white')
 ball = gr.Circle(gr.Point(350, 500), 20)
 ball.setFill('orange')
 
+bump = gr.Polygon(gr.Point(180,320), gr.Point(220,320), gr.Point(230,360), gr.Point(200,375), gr.Point(170,360))
+bump.setFill('red')
+
+
 lawn.draw(window)
 sky.draw(window)
 draw_spartak(525)
@@ -89,8 +94,15 @@ net_left(300)
 gate_bar(200)
 gate_bar(400)
 gatebar_up.draw(window)
+bump.draw(window)
 ball.draw(window)
-
+while True==True:
+    for i in range (100):
+        time.sleep(0.001)
+        ball.move(-1.5,-1.5)
+    for i in range (100):
+        time.sleep(0.001)
+        ball.move(1.5,1.5)
 
 window.getMouse()
 
