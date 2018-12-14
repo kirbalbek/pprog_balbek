@@ -94,8 +94,8 @@ for i in range(200, 301, 25):  # используется цикл, чтобы �
     net_left(i)
 for i in range(200, 401, 200):  # используется цикл, чтобы нарисовать параллельные штанги
     gate_bar(i)
-
 gatebar_up.draw(window)
 ball.draw(window)
+
 window.getMouse()
 window.close()
