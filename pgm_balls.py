@@ -22,12 +22,12 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
 
-    if x >= width-20 or x < 20:            #Отталкивание шарика
+    if x >= width-20 or x < 20:                    #Отталкивание шарика
         vx = -vx
     if y >= height-20 or y < 20:
         vy = -vy
 
-    if pygame.key.get_pressed()[pygame.K_UP]:
+    if pygame.key.get_pressed()[pygame.K_UP]:      #Ускорение по кнопкам
         vy-=5
     if pygame.key.get_pressed()[pygame.K_DOWN]:
         vy+=5
@@ -36,11 +36,18 @@ while True:
     if pygame.key.get_pressed()[pygame.K_RIGHT]:
         vx+=5
 
+    vx = vx*0.97                                    #Сопротивление воздуха
+    vy = vy*0.97
+
+    rgb_red = (vx**2+vy**2)**0.5                    #Определение цвета
+    if rgb_red > 255:
+        rgb_red = 255
+
     x += vx * dt
     y += vy * dt
 
 
     screen.fill((0, 0, 0))
-    pygame.draw.circle(screen, (150, 10, 50), (int(x), int(y)), 20)
+    pygame.draw.circle(screen, (int(rgb_red), 100, 100), (int(x), int(y)), 20)
 
     pygame.display.flip()
