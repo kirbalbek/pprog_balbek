@@ -1,75 +1,78 @@
-import sys
 import pygame
+import random as rnd
+                                        #глобальные переменные
+BACKGROUND = (0, 0, 0)
+RADIUS = 20
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+VELOCITY = 0
+NUMBER_OF_BALLS = 10
 
-pygame.init()
+def speed_count(v_onx, v_ony):          #функция для расчета скорости
+    v_final = (v_onx ** 2 + v_ony ** 2) ** 0.5
+    return v_final
 
-width = 800
-height = 500
 
-screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Ball')
-clock = pygame.time.Clock()
+class Ball:                             #класс для основных характеристик шаров
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.dx = 0
+        self.dy = 0
+        self.color = (100, 100, 100)
+        self.radius = RADIUS
 
-x = 30
-y = 30
-vx = 50
-vy = 50
-r = 20
-x_second = 300
-y_second = 400
-vx_second = 165
-vy_second = 165
 
-while True:
-    dt = clock.tick(50) / 1000.0
+def create_ball():                      #функция для создания шара
+    ball = Ball()
+    ball.x = rnd.randrange(ball.radius, SCREEN_WIDTH - ball.radius)
+    ball.y = rnd.randrange(ball.radius, SCREEN_HEIGHT - ball.radius)
+    ball.dx = rnd.randrange(1, 7)
+    ball.dy = rnd.randrange(1, 7)
+    VELOCITY = speed_count(ball.dx, ball.dy)*30     #определение цвета...
+    if VELOCITY > 255:                              #...от скорости
+        VELOCITY = 255
+    ball.color = (VELOCITY, 100, 100)
+    return ball
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
 
-    if x >= width - r or x < r:                    #Отталкивание шарика
-        vx = -vx
-    if y >= height - r or y < r:
-        vy = -vy
+def main():
+    pygame.init()
+    size = [SCREEN_WIDTH, SCREEN_HEIGHT]
+    screen = pygame.display.set_mode(size)
+    pygame.display.set_caption("Balls")
+    clock = pygame.time.Clock()
+    ball_list = []
+    game_process = True
+    for i in range (NUMBER_OF_BALLS):
+        ball = create_ball()
+        ball_list.append(ball)
+    while game_process:                             #бесконечный цикл
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_process = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_n:
+                    ball = make_ball()
+                    ball_list.append(ball)
+        for ball in ball_list:
+            ball.x += ball.dx
+            ball.y += ball.dy
 
-    if x_second >= width - r or x_second < r:      #Отталкивание 2 шарика
-        vx_second = -vx_second
-    if y_second >= height - r or y_second < r:
-        vy_second = -vy_second
 
-    if pygame.key.get_pressed()[pygame.K_UP]:      #Ускорение по кнопкам
-        vy-=5
-    if pygame.key.get_pressed()[pygame.K_DOWN]:
-        vy+=5
-    if pygame.key.get_pressed()[pygame.K_LEFT]:
-        vx-=5
-    if pygame.key.get_pressed()[pygame.K_RIGHT]:
-        vx+=5
+            if ball.y > SCREEN_HEIGHT - ball.radius or ball.y < ball.radius:
+                ball.dy = - ball.dy
+            if ball.x > SCREEN_WIDTH - ball.radius or ball.x < ball.radius:
+                ball.dx = - ball.dx
 
-    vx = vx*0.97                                    #Сопротивление воздуха
-    vy = vy*0.97
+        screen.fill(BACKGROUND)
 
-    rgb_red = (vx**2+vy**2)**0.5                    #Определение цвета
-    if rgb_red > 255:
-        rgb_red = 255
+        for ball in ball_list:
+            pygame.draw.circle(screen, ball.color,
+                            [ball.x, ball.y], ball.radius)
+        clock.tick(60)
+        pygame.display.flip()
 
-    balls_dist = (abs(x-x_second)**2+abs(y-y_second)**2)**0.5
-    if balls_dist<2*r:
-        lenx = abs(vx - vx_second)
-        leny = abs(vy - y_second)
-        vy1 = vy - 2*vy*leny/((vx**2+vy**2)**0.5)
-        vx1 = vx - 2*vx*leny/((vx**2+vy**2)**0.5)
-        vy_second = vy_second - vy*leny/((vx_second**2+vy_second**2)**0.5)
-        vx_second = vx_second - vx*leny/((vx_second**2+vy_second**2)**0.5)
 
-    x += vx * dt
-    y += vy * dt
-
-    x_second += vx_second * dt
-    y_second += vy_second * dt
-
-    screen.fill((0, 0, 0))
-    pygame.draw.circle(screen, (int(rgb_red), 100, 100), (int(x), int(y)), int(r))
-    pygame.draw.circle(screen, (235, 100, 100), (int(x_second), int(y_second)), int(r))
-
-    pygame.display.flip()
+if __name__ == "__main__":
+     main()
